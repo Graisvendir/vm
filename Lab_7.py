@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 import matplotlib.pyplot as plt
 from numpy import arange
-from scipy.interpolate import CubicSpline
-from sys import argv
 from collections import defaultdict
 from math import sinh
 import bisect
@@ -79,8 +77,6 @@ def main():
                 y.append(temp[2])
 
     if variant == 3:
-        #spline_x = CubicSpline([i for i in range(len(x))], [el for el in x])
-        #spline_y = CubicSpline([i for i in range(len(y))], [el for el in y])
         spline_x = buildSpline([Dot(i, x[i]) for i in range(len(x))])
         spline_y = buildSpline([Dot(i, y[i]) for i in range(len(x))])
         tTemp = list(arange(min(t), len(t) - 1, 0.1))
