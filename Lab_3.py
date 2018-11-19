@@ -30,10 +30,12 @@ def jacobi(A, B, eps, X = None):
     #
     while not converge:
         for i in range(len(A)):
-            X_temp[i] = B[i] / A[i][i] - sum(
-                                   A[i][j] / A[i][i] * X[j]
-                                   for j in range(len(A))
-                                   if j != i)
+            X_temp[i] = B[i] / A[i][i] - 
+                sum(
+                    A[i][j] / A[i][i] * X[j]
+                    for j in range(len(A))
+                    if j != i
+                )
         norm = max([ abs(X_temp[i] - X[i]) for i in range(len(A)) ])
         X = X_temp.copy()
         converge = norm <= eps
@@ -63,13 +65,12 @@ def main():
     with open(input("Input filename: ")) as file:
         n = file.readline()
         n = int(n)
-        A = []
-
-            #[
-            #    float(i)for i in file.readline().split()
-            #]
-            #for _ in range(n)
-        #]
+        A = [
+            [
+                float(i)for i in file.readline().split()
+            ]
+            for _ in range(n)
+        ]
         B = [
             float(file.readline())for _ in range(n)
         ]

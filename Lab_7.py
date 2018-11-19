@@ -4,6 +4,7 @@ from numpy import arange
 from scipy.interpolate import CubicSpline
 from sys import argv
 from collections import defaultdict
+from math import sinh
 import bisect
 
 
@@ -23,14 +24,14 @@ def buildSpline(dots):
     alpha, beta = [defaultdict(lambda: 0.), defaultdict(lambda: 0.)]
 
     for i in range(1, len(dots)-1):
-        hi1 = abs(dots[i].x - dots[i + 1].x)
+        hi1 = abs(dots[i].x - dots[i - 1].x)
         hi2 = abs(dots[i + 1].x - dots[i].x)
-        a = hi1
-        b = 2. * ( hi1 + hi2 )
-        c = hi2
-        d = 6. * ((dots[i + 1].y - dots[i].y) / hi2 - (dots[i].y - dots[i - 1].y) / hi1)
-        alpha[i] = c / (b - a * alpha[i - 1])
-        beta[i] = (a * beta[i - 1] - d) / (b - a * alpha[i - 1])
+
+        C = 4. * (hi1 + hi2)
+        F = 6. * ((dots[i + 1].y - dots[i].y) / hi1 - (dots[i].y - dots[i - 1].y) / hi2)
+        z = (hi1 * alpha[i - 1] + C)
+        alpha[i] = - hi2 / z
+        beta[i] = (F - hi1 * beta[i - 1]) / z
 
     for i in reversed(range(1, len(dots) - 1)):
         splines[i].c = alpha[i] * splines[i+1].c + beta[i]
@@ -54,26 +55,39 @@ def calc(splines, x):
             splines[indx].d * dx**3 / 6)
 
 def main():
-    x, y = [], []
+    x, y, t = [], [], []
     variant = int(input("Type: "))
-    with open("insline") as file:
+    with open("inspline") as file:
         if variant == 1:
             func = eval("lambda x:"+file.readline().replace("\n", ""))
             x = [float(i)for i in file.readline().split()]
             y = [func(i) for i in x]
-        elif variant == 2 or variant == 3:
+        elif variant == 2:
             n = int(file.readline().replace("\n", ""))
             x, y = [], []
             for i in range(n):
                 temp = [float(i)for i in file.readline().split()]
                 x.append(temp[0])
                 y.append(temp[1])
+        elif variant == 3:
+            n = int(file.readline().replace("\n", ""))
+            x, y = [], []
+            for i in range(n):
+                temp = [float(i)for i in file.readline().split()]
+                t.append(temp[0])
+                x.append(temp[1])
+                y.append(temp[2])
 
     if variant == 3:
-        spline_x = CubicSpline([i for i in range(len(x))], [el for el in x])
-        spline_y = CubicSpline([i for i in range(len(y))], [el for el in y])
-        lib_x = list(arange(min(x), len(x) - 1.1, 0.1))
-        plt.plot(spline_x(lib_x), spline_y(lib_x), label="splines")
+        #spline_x = CubicSpline([i for i in range(len(x))], [el for el in x])
+        #spline_y = CubicSpline([i for i in range(len(y))], [el for el in y])
+        spline_x = buildSpline([Dot(i, x[i]) for i in range(len(x))])
+        spline_y = buildSpline([Dot(i, y[i]) for i in range(len(x))])
+        tTemp = list(arange(min(t), len(t) - 1, 0.1))
+        new_x = [calc(spline_x, i)for i in tTemp]
+        new_y = [calc(spline_y, i)for i in tTemp]
+        plt.plot(x, y, "o", label="point")
+        plt.plot(new_x, new_y, label="splines")
     else:
         temp = sorted(zip(x, y), key = lambda c: c[0])
         x, y = [i[0]for i in temp], [i[1]for i in temp]
@@ -89,8 +103,6 @@ def main():
         if variant == 1:
             temp_y = [func(i) for i in new_x]
             plt.plot(new_x, temp_y, label="natural")
-        plt.plot(new_x, new_y_s, label="splines")
-
         plt.plot(new_x, new_y_s, label="splines")
 
     plt.legend()
