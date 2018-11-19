@@ -28,7 +28,7 @@ def printer(A):
 def calcAdjacentEigenValue(A, vector, size, initial):
     """Calculate an eigen value for 'matrix', adjacent to 'initial'"""
     tmp = range(size)
-    B = inv([[A[i][j]-initial if i == j else A[i][j]for j in tmp]for i in tmp])
+    B = inv([[A[i][j] - initial if i == j else A[i][j] for j in tmp]for i in tmp])
     x = array(vector).transpose().reshape(size)
     xn = empty(size)
     lam, adj_lambda, last, i = 0, 0, 1, 0
@@ -99,7 +99,7 @@ def sec_lambda(A, base_vector, eVector):
 
 
 def main():
-    with open(input("Input filename: ")) as file:
+    with open("inchast") as file:
         n = int(file.readline())
         A = [[float(i)for i in file.readline().split()]for _ in range(n)]
     printer(A)
@@ -118,6 +118,7 @@ def main():
         print("\nMax and min lambda")
     except ValueError:
         print("Does not converge!!!")
+        return
     L0 = -9999
     tmp = range(n)
     new_A = [[A[i][j] + L0 if i == j else A[i][j] for j in tmp] for i in tmp]

@@ -52,7 +52,7 @@ def printer(A):
 
 
 def main():
-    with open(input("Input filename: ")) as file:
+    with open("infull") as file:
         n = int(file.readline())
         A = [[float(i)for i in file.readline().split()]for _ in range(n)]
     printer(A)

@@ -1,7 +1,6 @@
 #!/usr/bin/python3
-from sys import argv
-import numpy as np
 from math import *
+import numpy as np
 from prettytable import PrettyTable
 from random import random, choice, randint
 
@@ -45,7 +44,7 @@ def print_xydiff(x, y, diff1, diff2, diff3):
 
 
 def main():
-    with open(argv[1]) as file:
+    with open("indiff") as file:
         func_str = file.readline()
         func = eval("lambda x:" + func_str)
         beg, end, step = [float(i) for i in file.readline().split()]

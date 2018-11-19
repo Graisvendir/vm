@@ -77,7 +77,7 @@ def trap(func, l, u, s, eps):
 
 
 def main():
-    with open(argv[1]) as file:
+    with open("ininteg") as file:
         func_str = file.readlines()
         func = eval("lambda x:" + func_str[0])
         low, up, step = [float(i) for i in func_str[1].split()]
@@ -86,6 +86,7 @@ def main():
             step = "auto"
         else:
             eps = 999999
+
     if step == "auto":
         print("Lower limit: %f, upper limit:%f, accur:%f" % (low, up, eps))
     else:

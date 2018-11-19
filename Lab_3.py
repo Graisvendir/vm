@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 from math import sqrt
+from numpy import linalg
 
 
 MAX_PRECISION = 0.000000000000001
@@ -30,17 +31,20 @@ def jacobi(A, B, eps, X = None):
     #
     while not converge:
         for i in range(len(A)):
-            X_temp[i] = B[i] / A[i][i] - 
-                sum(
-                    A[i][j] / A[i][i] * X[j]
-                    for j in range(len(A))
-                    if j != i
-                )
+            X_temp[i] = B[i] / A[i][i] - sum(
+                                            A[i][j] / A[i][i] * X[j]
+                                            for j in range(len(A))
+                                                if j != i
+                                        )
         norm = max([ abs(X_temp[i] - X[i]) for i in range(len(A)) ])
         X = X_temp.copy()
         converge = norm <= eps
         iterate += 1
     return X, iterate
+
+def conditionOfConvergence():
+
+    return True
 
 
 def seidel(A, b, eps):
@@ -62,7 +66,7 @@ def seidel(A, b, eps):
 
 
 def main():
-    with open(input("Input filename: ")) as file:
+    with open("inja") as file:
         n = file.readline()
         n = int(n)
         A = [
@@ -76,6 +80,7 @@ def main():
         ]
     printer(A, B, n)
     print("Jacobi:")
+
     X = jacobi(A, B, MAX_PRECISION)
     temp = 0
     if X is not False:
